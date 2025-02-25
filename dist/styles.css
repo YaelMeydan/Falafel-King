@@ -1,0 +1,33 @@
+body {
+  font-family: Arial, sans-serif;
+  background: url("background.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+#landing, #gameArea {
+  text-align: center;
+  padding: 20px;
+}
+
+#inventory {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px;
+}
+
+.inventory-item {
+  border: 1px solid #333;
+  padding: 10px;
+}
+
+.order {
+  border: 1px dashed #333;
+  padding: 10px;
+  margin: 10px;
+}
+
+@media (max-width: 600px) {
+  #inventory {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,78 @@
+Here's an overview of how you can implement the game using HTML, SASS (CUBE), and TypeScript.
+
+### 1. *HTML Structure*
+html
+עובד  הכי טוב
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dist/styles.css">
+    <title>Ingredient Game</title>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing">
+        <h1>Ingredient Game</h1>
+        <p>Fill orders using ingredients.</p>
+        <input type="text" id="username" placeholder="Enter Username" />
+        <button id="startBtn">Start Game</button>
+    </div>
+    <div id="gameArea" style="display:none;">
+        <h2 id="playerName"></h2>
+        <div id="scoreAndTimer">
+            <span>Score: <span id="score">0</span></span>
+            <span>Time Left: <span id="timer">120</span> seconds</span>
+        </div>
+        <div id="inventory"></div>
+        <div id="orders"></div>
+    </div>
+    <div id="scoreboard" style="display:none;"></div>
+    <script src="dist/game.js"></script>
+</body>
+</html>
+
+
+
+
+### Frontend Additions
+
+Here are a few enhancements to the HTML structure that interact with the new features:
+
+1. *Restock Button (Optional):* You can add a restock button when an ingredient is empty. 
+
+javascript
+    if (ingredientInventory[ingredient] <= 0) {
+        const restockButton = document.createElement('button');
+        restockButton.innerText = 'Restock ' + ingredient.charAt(0).toUpperCase() + ingredient.slice(1);
+        restockButton.addEventListener('click', () => {
+            ingredientInventory[ingredient] = 5; // Reset to default or desired number
+            updateInventoryDisplay();
+        });
+        itemDiv.appendChild(restockButton);
+    }
+
+
+2. *Responsive Layout:* The CSS should adjust your layout neatly. Add any necessary media queries, e.g., for mobile devices, enhancing inventory display stacking.
+
+### Conclusion
+
+Overall, this structure now allows players to enter their usernames, manage inventory through drag-and-drop, fulfill orders, and maintain a score that is saved across game sessions. Additionally, you've established game mechanics for both new and returning users, and laid the groundwork for a competitive scoreboard.
+
+You can now further refine gameplay, aesthetics, and functionality based on user feedback or further design preferences!
+
+### 4. *Implementing Drag-and-Drop*
+Add functionality for drag-and-drop to manage inventory and fulfill orders in the generateOrder function and update the score accordingly.
+
+### 5. *End Game Logic*
+Implement the logic for the endGame() function to display the scoreboard and allow replay or refresh. 
+
+### 6. *Conclusion*
+Combine these code snippets, and ensure that drag-and-drop functionality is thoroughly defined in context. This template provides a solid framework for your interactive game.
+
+Sure! Let's extend the TypeScript game logic to include a full implementation of inventory management, order generation, drag-and-drop functionality, and score handling. I'll also provide additional HTML and CSS as needed.
+
+### Extended TypeScript Logic (game.ts)
+
+This section covers inventory management, drag-and-drop functionality, order generation, and the end-of-game handling.
