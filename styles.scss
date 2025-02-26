@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background: url("/Falafel-King/2.jpg")no-repeat center center fixed;
+    background: url("/Falafel-King/1.jpg")no-repeat center center fixed;
     background-size: contain;
 }
 
@@ -29,7 +29,6 @@ body {
     background-color: rgba(255, 228, 196, 0.511);
 }
 
-// Media queries for responsive design
 @media (max-width: 600px) {
     #inventory {
         flex-direction: column;

@@ -82,9 +82,8 @@ function completeOrder() {
     score += 10;
     scoreDisplay.innerText = score.toString();
     localStorage.setItem(playerName.innerText, JSON.stringify({ score }));
-    // Show completed message and generate new order
     alert('Completed!');
-    currentOrder = null; // Reset current order
+    currentOrder = null;
     generateOrder();
     updateInventoryDisplay();
 }
@@ -94,21 +93,19 @@ function updateInventoryDisplay() {
         const itemDiv = document.createElement('div');
         itemDiv.className = 'inventory-item';
         itemDiv.innerText = `${ingredient.charAt(0).toUpperCase() + ingredient.slice(1)}: ${ingredientInventory[ingredient]}`;
-        // Drag-and-drop functionality
         itemDiv.setAttribute('draggable', 'true');
         itemDiv.addEventListener('dragstart', (event) => {
             event.dataTransfer?.setData('text/plain', ingredient);
         });
         inventoryDiv.appendChild(itemDiv);
     }
-    // Notify when inventory is empty
     for (let ingredient in ingredientInventory) {
         if (ingredientInventory[ingredient] <= 0) {
             alert(`${ingredient.charAt(0).toUpperCase() + ingredient.slice(1)} is out of stock!`);
             const restockButton = document.createElement('button');
             restockButton.innerText = 'Restock ' + ingredient.charAt(0).toUpperCase() + ingredient.slice(1);
             restockButton.addEventListener('click', () => {
-                ingredientInventory[ingredient] = 5; // Reset to default or desired number
+                ingredientInventory[ingredient] = 5;
                 updateInventoryDisplay();
             });
             inventoryDiv.appendChild(restockButton);
@@ -125,7 +122,6 @@ function endGame() {
         <h3>Top Players:</h3>
         <div id="topScores"></div>
     `;
-    // Logic to get top scores
     getTopScores();
     scoreboard.style.display = 'block';
 }
@@ -136,9 +132,7 @@ function getTopScores() {
         const userData = JSON.parse(localStorage.getItem(key) || '{"score": 0}');
         players.push({ username: key, score: userData.score });
     }
-    // Sort players by score in descending order
     players.sort((a, b) => b.score - a.score);
-    // Display top 5 players
     const topScoresDiv = document.getElementById('topScores');
     players.slice(0, 5).forEach(player => {
         const playerDiv = document.createElement('div');
@@ -146,5 +140,4 @@ function getTopScores() {
         topScoresDiv.appendChild(playerDiv);
     });
 }
-// Attach Event Listeners
 startBtn.addEventListener('click', startGame);
