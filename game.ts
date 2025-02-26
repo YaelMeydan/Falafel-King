@@ -8,7 +8,17 @@ const timerDisplay = document.getElementById('timer')!;
 let score = 0;
 let timer: number;
 let ingredientInventory = { falafel: 5, tomatoes: 5, lettuce: 5, onions: 5 };
-let orderCount = localStorage.getItem('orderCount') ? +localStorage.getItem('orderCount') : 0;
+const orderCountString = localStorage.getItem('orderCount');
+let orderCount: number;
+
+if (orderCountString !== null) {
+    orderCount = Number(orderCountString);
+    if (isNaN(orderCount)) {
+        orderCount = 0; // Fallback in case of invalid number
+    }
+} else {
+    orderCount = 0; // Default value if not found
+}
 
 
 const inventoryDiv = document.getElementById('inventory')!;
@@ -30,7 +40,7 @@ function startGame() {
         timer = 30;
         score += 15; // Increment per game for returning users
     } else {
-        timer = 10; // Default for new users //לשנות ל-60
+        timer = 60; // Default for new users 
     }
     
     localStorage.setItem('orderCount', orderCount.toString());
@@ -76,6 +86,18 @@ function generateOrder() {
     ordersDiv.appendChild(orderElement);
 
     const completeOrderBtn = document.getElementById('completeOrderBtn')!;
+   
+// Allow Drop for Drag-and-Drop
+const allowDrop = (ev: DragEvent) => {
+    ev.preventDefault();
+};
+
+// Drop Event - Order Completion
+const drop = (ev: DragEvent) => {
+    ev.preventDefault();
+    const data = ev.dataTransfer!.getData("text");
+    const ingredient = document.getElementById(data);
+};
     completeOrderBtn.addEventListener('click', completeOrder);
 }
 
@@ -84,7 +106,7 @@ function completeOrder() {
 
     // Check if inventory has enough ingredients
     const hasAllIngredients = Object.keys(currentOrder).every(ingredient => {
-        return ingredientInventory[ingredient] >= currentOrder[ingredient];
+        return ingredientInventory[ingredient] >= currentOrder![ingredient];
     });
 
     if (!hasAllIngredients) {
@@ -180,5 +202,5 @@ if (ingredientInventory[ingredient] <= 0) {
         ingredientInventory[ingredient] = 5; // Reset to default or desired number
         updateInventoryDisplay();
     });
-    itemDiv.appendChild(restockButton);
+    inventoryDiv.appendChild(restockButton);
 }
