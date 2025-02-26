@@ -4,23 +4,14 @@ const gameArea = document.getElementById('gameArea');
 const playerName = document.getElementById('playerName');
 const scoreDisplay = document.getElementById('score');
 const timerDisplay = document.getElementById('timer');
-let score = 0;
-let timer;
-let ingredientInventory = { falafel: 5, tomatoes: 5, lettuce: 5, onions: 5 };
-const orderCountString = localStorage.getItem('orderCount');
-let orderCount;
-if (orderCountString !== null) {
-    orderCount = Number(orderCountString);
-    if (isNaN(orderCount)) {
-        orderCount = 0; // Fallback in case of invalid number
-    }
-}
-else {
-    orderCount = 0; // Default value if not found
-}
 const inventoryDiv = document.getElementById('inventory');
 const ordersDiv = document.getElementById('orders');
 let currentOrder = null;
+let score = 0;
+let timer;
+let ingredientInventory = { falafel: 5, tomatoes: 5, lettuce: 5, onions: 5 };
+const ingredient = JSON.parse(localStorage.getItem(ingredientInventory));
+let orderCount = localStorage.getItem('orderCount') ? +localStorage.getItem('orderCount') : 0;
 function startGame() {
     const username = usernameInput.value;
     if (username.length < 1)
@@ -32,10 +23,9 @@ function startGame() {
     orderCount++;
     if (orderCount >= 4) {
         timer = 30;
-        score += 15; // Increment per game for returning users
     }
     else {
-        timer = 60; // Default for new users 
+        timer = 30; // timer should be 60 seconds originally, reduced time for class presentation.
     }
     localStorage.setItem('orderCount', orderCount.toString());
     localStorage.setItem(username, JSON.stringify({ score }));
@@ -61,7 +51,7 @@ function generateOrder() {
         lettuce: Math.floor(Math.random() * 4),
         onions: Math.floor(Math.random() * 4),
     };
-    ordersDiv.innerHTML = ''; // Clear previous orders
+    ordersDiv.innerHTML = '';
     const orderElement = document.createElement('div');
     orderElement.className = 'order';
     orderElement.innerHTML = `
@@ -74,22 +64,11 @@ function generateOrder() {
     `;
     ordersDiv.appendChild(orderElement);
     const completeOrderBtn = document.getElementById('completeOrderBtn');
-    // Allow Drop for Drag-and-Drop
-    const allowDrop = (ev) => {
-        ev.preventDefault();
-    };
-    // Drop Event - Order Completion
-    const drop = (ev) => {
-        ev.preventDefault();
-        const data = ev.dataTransfer.getData("text");
-        const ingredient = document.getElementById(data);
-    };
     completeOrderBtn.addEventListener('click', completeOrder);
 }
 function completeOrder() {
     if (!currentOrder)
         return;
-    // Check if inventory has enough ingredients
     const hasAllIngredients = Object.keys(currentOrder).every(ingredient => {
         return ingredientInventory[ingredient] >= currentOrder[ingredient];
     });
@@ -97,12 +76,11 @@ function completeOrder() {
         alert('Not enough ingredients to complete this order!');
         return;
     }
-    // Deduct the ingredients from inventory
     for (let ingredient in currentOrder) {
-        return ingredientInventory[ingredient] -= currentOrder[ingredient];
+        ingredientInventory[ingredient] -= currentOrder[ingredient];
     }
-    // Update score and local storage
     score += 10;
+    scoreDisplay.innerText = score.toString();
     localStorage.setItem(playerName.innerText, JSON.stringify({ score }));
     // Show completed message and generate new order
     alert('Completed!');
@@ -127,7 +105,13 @@ function updateInventoryDisplay() {
     for (let ingredient in ingredientInventory) {
         if (ingredientInventory[ingredient] <= 0) {
             alert(`${ingredient.charAt(0).toUpperCase() + ingredient.slice(1)} is out of stock!`);
-            // Optional: Add a restock button for empty items
+            const restockButton = document.createElement('button');
+            restockButton.innerText = 'Restock ' + ingredient.charAt(0).toUpperCase() + ingredient.slice(1);
+            restockButton.addEventListener('click', () => {
+                ingredientInventory[ingredient] = 5; // Reset to default or desired number
+                updateInventoryDisplay();
+            });
+            inventoryDiv.appendChild(restockButton);
         }
     }
 }
@@ -164,12 +148,3 @@ function getTopScores() {
 }
 // Attach Event Listeners
 startBtn.addEventListener('click', startGame);
-if (ingredientInventory[ingredient] <= 0) {
-    const restockButton = document.createElement('button');
-    restockButton.innerText = 'Restock ' + ingredient.charAt(0).toUpperCase() + ingredient.slice(1);
-    restockButton.addEventListener('click', () => {
-        ingredientInventory[ingredient] = 5; // Reset to default or desired number
-        updateInventoryDisplay();
-    });
-    inventoryDiv.appendChild(restockButton);
-}
